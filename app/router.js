@@ -1,8 +1,21 @@
 import Ember from 'ember';
 import config from './config/environment';
 
+function parse(str) {
+  if (!str) {
+    return '/';
+  }
+
+  if (str[str.length - 1] !== '/') {
+    return str + '/';
+  }
+
+  return str;
+}
+
 var Router = Ember.Router.extend({
-  location: config.locationType
+  location: config.locationType,
+  rootURL: parse(Ember.$('meta[name=rootURL]').attr('content'))
 });
 
 Router.map(function() {
