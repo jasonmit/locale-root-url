@@ -2,7 +2,7 @@
 
 A dummy app that shows how one might prefix their app with a locale without it interferring with Ember's router.
 
-Basically, `http://foo.com/fr/about` and `http://foo.com/about` go to the same route.
+Basically, `http://foo.com/fr` and `http://foo.com/` go to the same index route.
 
 It also handles making the user's locale accessible for setting on i18n.  One could also extend this to include translations only for the user's locale versus shipping your application with all translations your app needs to support.
 
