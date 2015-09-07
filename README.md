@@ -2,7 +2,7 @@
 
 A dummy app that shows how one might prefix their app with a locale without it interferring with Ember's router.
 
-Basically, `http://foo.com/fr/` (trailing slash required) and `http://foo.com/` go to the same index route.
+Basically, `http://foo.com/fr/` (nuance, trailing slash required) and `http://foo.com/` go to the same index route by preloads app with different translation files.  English by default.  Passing `/en/` will also work as expected.
 
 It also handles making the user's locale accessible for setting on i18n.  One could also extend this to include translations only for the user's locale versus shipping your application with all translations your app needs to support.
 
