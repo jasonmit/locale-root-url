@@ -2,10 +2,11 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'example-app',
+    modulePrefix: 'locale-root-url',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
+    i18n: { defaultLocale: 'en' },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

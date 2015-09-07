@@ -9,19 +9,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="locale" content="">
     <meta name="rootURL" content="">
+    <meta name="translations" content="">
 
     {{content-for 'head'}}
 
     <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/example-app.css">
+    <link rel="stylesheet" href="assets/locale-root-url.css">
 
     {{content-for 'head-footer'}}
   </head>
   <body>
+    <a href="/fr/">French</a>
+    <a href="/en/">English</a>
+    <a href="/">English (default)</a>
+
     {{content-for 'body'}}
 
     <script src="assets/vendor.js"></script>
-    <script src="assets/example-app.js"></script>
+    <script src="assets/locale-root-url.js"></script>
 
     {{content-for 'body-footer'}}
   </body>

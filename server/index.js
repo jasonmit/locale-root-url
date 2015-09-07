@@ -9,41 +9,7 @@ var BASE_DIRECTORY = 'dist';
 var SERVE_FROM = path.join(process.cwd(), BASE_DIRECTORY);
 var DEFAULT_INDEX = path.join(SERVE_FROM, 'index.html');
 
-function middleware(app) {
-  app.use(function localeResolver(req, res, next) {
-    var urlPaths = req.path.split('/');
-    var acceptLanguage = req.get('accept-language');
-    var locale;
-
-    if (urlPaths.length > 1) {
-      var localeSegment = urlPaths[1];
-      var isValidLocale = fs.existsSync(path.join(SERVE_FROM, 'locales', localeSegment + '.js'));
-      locale = localeSegment;
-      res.locals.rootURL = '/' + localeSegment;
-    }
-
-    if (!locale && acceptLanguage) {
-      // unsafe, but this is just for demoing
-      locale = acceptLanguage.split(',')[0];
-    }
-
-    res.locals.locale = locale || 'en-US';
-    next();
-  });
-
-  app.use(staticFile(BASE_DIRECTORY));
-
-  app.use(function catchAll(req, res, next) {
-    fs.readFile(DEFAULT_INDEX, { encoding: 'utf8'}, function(err, data) {
-      var $ = cheerio.load(data);
-      $('meta[name=locale]').attr('content', res.locals.locale.toLowerCase());
-      $('meta[name=rootURL]').attr('content', res.locals.rootURL || '/');
-      res.status(200).send($.html());
-    });
-  });
-}
-
-// should be rewritten
+// staticFile should be rewritten
 function staticFile(baseDirectory) {
   return function(req, res, next) {
     if (!req.path || req.path === '/') {
@@ -64,6 +30,49 @@ function staticFile(baseDirectory) {
       });
     });
   };
+}
+
+function middleware(app) {
+  app.use(staticFile(BASE_DIRECTORY));
+
+  app.use(function translationContextBuilder(req, res, next) {
+    // TODO: implement fallback to respect accept-language
+    var acceptLanguage = req.get('accept-language');
+    var root = path.join(SERVE_FROM, 'assets', 'translations');
+    var locale = 'en';
+
+    if (req.path.length > 1) {
+      var lang = req.path.substring(1).split('/')[0].replace(/\.\./g, '');
+      var translation = path.join(root, lang + '.json');
+      var hasTranslation = fs.existsSync(translation);
+
+      if (hasTranslation) {
+        locale = lang;
+        res.locals.rootURL = '/' + lang;
+      }
+    }
+
+    fs.readFile(path.join(root, locale + '.json'), function(err, translations) {
+      res.locals.translations = translations;
+      res.locals.locale = locale;
+      next();
+    });
+  });
+
+  // much of this method is unsafe, only to demo purposes
+  app.use(function catchAll(req, res, next) {
+    fs.readFile(DEFAULT_INDEX, { encoding: 'utf8'}, function(err, data) {
+      var $ = cheerio.load(data);
+
+      if (res.locals.translations) {
+        $('meta[name=translations]').attr('content', res.locals.translations);
+      }
+
+      $('meta[name=locale]').attr('content', res.locals.locale.toLowerCase());
+      $('meta[name=rootURL]').attr('content', res.locals.rootURL || '/');
+      res.status(200).send($.html());
+    });
+  });
 }
 
 module.exports = middleware;

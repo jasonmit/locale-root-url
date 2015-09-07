@@ -37,7 +37,10 @@
     "ember-export-application-global": "^1.0.3"
   },
   "dependencies": {
+    "broccoli-funnel": "^0.2.8",
+    "broccoli-merge-trees": "^0.2.3",
     "cheerio": "^0.19.0",
+    "ember-i18n": "^4.1.2",
     "express": "^4.13.3"
   }
 }
