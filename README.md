@@ -1,10 +1,10 @@
 # locale-root-url
 
-A dummy app that shows how one might prefix their app with a locale without it interferring with Ember's router.
+A dummy app that shows how one might prefix their app with a locale without it interfering with Ember's router.
 
-Basically, `http://foo.com/fr/` (nuance, trailing slash required) and `http://foo.com/` go to the same index route by preloads app with different translation files.  
+Basically, `http://foo.com/fr/` (nuance, trailing slash required) and `http://foo.com/` go to the same index route but preloads app payload with default translations.  
 
-English by default.  *NOTE: Passing `/en/` will also work as expected.*  The source of truth for what locales are supported as the translation files themselves.  The translation files are current in JSON format outside of `app` (very important and intentional to avoid bundling in app.js).  This can also be easily swapped out with a YAML parser instead.
+English by default.  *NOTE: Passing `/en/` will also work as expected.*  The source of truth for what locales are supported are the translation files themselves.  The translation files are stored in YAML format outside of `app` (very important and intentional to avoid bundling in app.js).
 
 ## Prerequisites
 
@@ -53,4 +53,3 @@ Specify what it takes to deploy your app.
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
-

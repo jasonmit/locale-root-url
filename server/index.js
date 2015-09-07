@@ -1,9 +1,11 @@
 'use strict';
 
+var serialize = require('serialize-javascript');
 var cheerio = require('cheerio');
+var yaml = require('js-yaml');
 var path = require('path');
-var fs = require('fs');
 var url = require('url');
+var fs = require('fs');
 
 var BASE_DIRECTORY = 'dist';
 var SERVE_FROM = path.join(process.cwd(), BASE_DIRECTORY);
@@ -43,8 +45,7 @@ function middleware(app) {
 
     if (req.path.length > 1) {
       var lang = req.path.substring(1).split('/')[0].replace(/\.\./g, '');
-      var translation = path.join(root, lang + '.json');
-      var hasTranslation = fs.existsSync(translation);
+      var hasTranslation = fs.existsSync(path.join(root, lang + '.yaml'));
 
       if (hasTranslation) {
         locale = lang;
@@ -52,8 +53,8 @@ function middleware(app) {
       }
     }
 
-    fs.readFile(path.join(root, locale + '.json'), function(err, translations) {
-      res.locals.translations = translations;
+    fs.readFile(path.join(root, locale + '.yaml'), 'utf8', function(err, translations) {
+      res.locals.translations = yaml.safeLoad(translations);
       res.locals.locale = locale;
       next();
     });
@@ -65,7 +66,7 @@ function middleware(app) {
       var $ = cheerio.load(data);
 
       if (res.locals.translations) {
-        $('meta[name=translations]').attr('content', res.locals.translations);
+        $('meta[name=translations]').attr('content', serialize(res.locals.translations));
       }
 
       $('meta[name=locale]').attr('content', res.locals.locale.toLowerCase());
