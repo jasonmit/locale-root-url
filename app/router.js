@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import config from './config/environment';
 
-function parse(str) {
+function endsWithSlash(str) {
   if (!str) {
     return '/';
   }
@@ -15,7 +15,7 @@ function parse(str) {
 
 var Router = Ember.Router.extend({
   location: config.locationType,
-  rootURL: parse(Ember.$('meta[name=rootURL]').attr('content'))
+  rootURL: endsWithSlash(Ember.$('meta[name=rootURL]').attr('content'))
 });
 
 Router.map(function() {

@@ -62,6 +62,10 @@ function middleware(app) {
 
   // much of this method is unsafe, only to demo purposes
   app.use(function catchAll(req, res, next) {
+    if (req.url === '/ember-cli-live-reload.js') {
+      return next();
+    }
+
     fs.readFile(DEFAULT_INDEX, { encoding: 'utf8'}, function(err, data) {
       var $ = cheerio.load(data);
 
@@ -71,6 +75,7 @@ function middleware(app) {
 
       $('meta[name=locale]').attr('content', res.locals.locale.toLowerCase());
       $('meta[name=rootURL]').attr('content', res.locals.rootURL || '/');
+
       res.status(200).send($.html());
     });
   });
