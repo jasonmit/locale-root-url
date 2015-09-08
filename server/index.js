@@ -47,12 +47,18 @@ function extend(app, options) {
     var locale = 'en';
 
     if (req.path.length > 1) {
-      var lang = req.path.substring(1).split('/')[0].replace(/\.\./g, '');
+      var lang = req.path.substring(1).split('/')[0].replace(/\.\./g, '').toLowerCase();
       var hasTranslation = fs.existsSync(path.join(root, lang + '.yaml'));
 
       if (hasTranslation) {
+        // edge-case, rootURLs need to end in a slash so
+        // if the request is for /fr then redirect to /fr/
+        if (req.path.toLowerCase() === '/' + lang) {
+          return res.redirect(301, '/' + lang + '/');
+        }
+
         locale = lang;
-        res.locals.rootURL = '/' + lang;
+        res.locals.rootURL = '/' + lang + '/';
       }
     }
 

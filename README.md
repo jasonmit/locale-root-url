@@ -1,8 +1,8 @@
 # locale-root-url
 
-A dummy app that shows how one might prefix their app with a locale without it interfering with Ember's router.
+A dummy app that shows how one might prefix their app with a locale without it interfering with Ember's router while also loading only the translation requested.  In this example, it's driven by the URL prefix.  But could be expanded to fallback to accept-language header or some user-specific dimension.
 
-Basically, `http://foo.com/fr/` (nuance, trailing slash required) and `http://foo.com/` go to the same index route but preloads app payload with default translations.  
+`http://foo.com/fr/` and `http://foo.com/` go to the same index route but preloads app payload with correct translations.
 
 English by default.  *NOTE: Passing `/en/` will also work as expected.*  The source of truth for what locales are supported are the translation files themselves.  The translation files are stored in YAML format outside of `app` (very important and intentional to avoid bundling in app.js).
 
