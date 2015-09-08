@@ -4,14 +4,17 @@ var serialize = require('serialize-javascript');
 var cheerio = require('cheerio');
 var yaml = require('js-yaml');
 var path = require('path');
-var url = require('url');
 var fs = require('fs');
 
 var BASE_DIRECTORY = 'dist';
 var SERVE_FROM = path.join(process.cwd(), BASE_DIRECTORY);
 var DEFAULT_INDEX = path.join(SERVE_FROM, 'index.html');
 
-// staticFile should be rewritten
+function meta(name, content) {
+  var $ = cheerio.load('<meta name="' + name + '" />');
+  return $('meta').attr('content', content);
+}
+
 function staticFile(baseDirectory) {
   return function(req, res, next) {
     if (!req.path || req.path === '/') {
@@ -34,12 +37,12 @@ function staticFile(baseDirectory) {
   };
 }
 
-function middleware(app) {
+function extend(app, options) {
   app.use(staticFile(BASE_DIRECTORY));
 
-  app.use(function translationContextBuilder(req, res, next) {
+  app.use(function translationResolver(req, res, next) {
     // TODO: implement fallback to respect accept-language
-    var acceptLanguage = req.get('accept-language');
+    // var acceptLanguage = req.get('accept-language');
     var root = path.join(SERVE_FROM, 'assets', 'translations');
     var locale = 'en';
 
@@ -60,25 +63,21 @@ function middleware(app) {
     });
   });
 
-  // much of this method is unsafe, only to demo purposes
-  app.use(function catchAll(req, res, next) {
+  app.use(function outputLocals(req, res, next) {
     if (req.url === '/ember-cli-live-reload.js') {
       return next();
     }
 
     fs.readFile(DEFAULT_INDEX, { encoding: 'utf8'}, function(err, data) {
       var $ = cheerio.load(data);
-
-      if (res.locals.translations) {
-        $('meta[name=translations]').attr('content', serialize(res.locals.translations));
-      }
-
-      $('meta[name=locale]').attr('content', res.locals.locale.toLowerCase());
-      $('meta[name=rootURL]').attr('content', res.locals.rootURL || '/');
-
+      var $head = $('head');
+      $head.append(meta('translations', serialize(res.locals.translations)));
+      $head.append(meta('locale', res.locals.locale.toLowerCase()));
+      $head.append(meta('rootURL', res.locals.rootURL || '/'));
       res.status(200).send($.html());
     });
   });
 }
 
-module.exports = middleware;
+exports.extend = extend;
+module.exports = extend;
