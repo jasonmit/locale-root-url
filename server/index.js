@@ -15,9 +15,9 @@ function meta(name, content) {
   return $('meta').attr('content', content);
 }
 
-function staticFile(baseDirectory) {
+function serveStatic(baseDirectory) {
   return function(req, res, next) {
-    if (!req.path || req.path === '/') {
+    if (!path.extname(req.path)) {
       return next();
     }
 
@@ -38,7 +38,7 @@ function staticFile(baseDirectory) {
 }
 
 function extend(app, options) {
-  app.use(staticFile(BASE_DIRECTORY));
+  app.use(serveStatic(BASE_DIRECTORY));
 
   app.use(function translationResolver(req, res, next) {
     // TODO: implement fallback to respect accept-language
