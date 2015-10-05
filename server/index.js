@@ -37,7 +37,7 @@ function serveStatic(baseDirectory) {
   };
 }
 
-function extend(app, options) {
+module.exports = function(app) {
   app.use(serveStatic(BASE_DIRECTORY));
 
   app.use(function translationResolver(req, res, next) {
@@ -84,6 +84,3 @@ function extend(app, options) {
     });
   });
 }
-
-exports.extend = extend;
-module.exports = extend;
