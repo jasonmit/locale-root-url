@@ -42,6 +42,6 @@
     "cheerio": "^0.19.0",
     "ember-i18n": "^4.1.2",
     "express": "^4.13.3",
-    "serialize-javascript": "^1.1.1"
+    "serialize-javascript": "^2.1.2"
   }
 }
