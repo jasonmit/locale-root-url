@@ -51,7 +51,7 @@ module.exports = function(app) {
       const lang = req.path.substring(1).split('/')[0].replace(/\.\./g, '').toLowerCase();
       
       // TODO: ineffecient and not correct
-      const hasTranslations = fs.existsSync(path.join(root, lang));
+      const hasTranslations = fs.existsSync(path.join(root, lang + '.yaml'));
 
       if (hasTranslations) {
         // edge-case, rootURLs need to end in a slash so
